@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RecipeCard from '../../components/RecipeCard.astro';
 import EmptyState from '../../components/EmptyState.astro';
+import Ornament from '../../components/Ornament.astro';
 import { getRecipes, showFixtures } from '../../lib/content';
 const recipes = await getRecipes();
 const categories = [...new Set(recipes.map(recipe => recipe.data.category))].sort();
@@ -9,17 +10,18 @@ const tags = [...new Set(recipes.flatMap(recipe => recipe.data.tags))].sort();
 ---
 <BaseLayout title="Recipes" description="Food and cocktail recipes with structured ingredients, adjustable servings, and transparent kitchen-testing status." noindex={showFixtures && recipes.length > 0}>
   {showFixtures && <div class="fixture-ribbon">Development preview · fixture content is visible and will not ship</div>}
-  <header class="shell grid gap-8 py-16 lg:grid-cols-[1fr_.65fr] lg:items-end lg:py-24">
-    <div><p class="eyebrow">The recipe book</p><h1 class="section-title mt-5">Cook the idea.<br/>Then improve it.</h1></div>
-    <p class="max-w-xl text-lg leading-8 text-ink/65">Food and cocktails designed around how people actually shop, cook, improvise, and entertain. Every entry carries an editorial status so you know what has met a pan and what is still a proposition.</p>
-  </header>
-  <div class="shell">
+  <header class="page-masthead"><div class="shell relative z-10 grid gap-8 py-14 lg:grid-cols-[1fr_.65fr] lg:items-end lg:py-20">
+    <div><p class="eyebrow text-brass-bright">The recipe book</p><h1 class="section-title mt-5">Cook the idea.<br/>Then improve it.</h1></div>
+    <p class="max-w-xl text-lg leading-8 text-cream/72">Food and cocktails designed around how people actually shop, cook, improvise, and entertain. Every entry carries an editorial status so you know what has met a pan and what is still a proposition.</p>
+  </div></header>
+  <div class="shell py-12 lg:py-16">
+    <Ornament class="mx-auto mb-10 text-brass" />
     {recipes.length ? <>
-      <section class="card mb-8 grid gap-4 p-4 lg:grid-cols-[1fr_auto_auto]" aria-label="Recipe filters">
+      <section class="paper-panel mb-8 grid gap-4 p-4 lg:grid-cols-[1fr_auto_auto]" aria-label="Recipe filters">
         <label><span class="mb-1 block text-[.68rem] font-extrabold tracking-wider uppercase">Search</span><input id="recipe-search" type="search" placeholder="Try citrus, pasta, aperitif…" class="min-h-12 w-full border border-green/25 bg-paper px-3" /></label>
         <label><span class="mb-1 block text-[.68rem] font-extrabold tracking-wider uppercase">Type</span><select id="kind-filter" class="min-h-12 w-full border border-green/25 bg-paper px-3 lg:w-40"><option value="">Everything</option><option value="food">Food</option><option value="cocktail">Cocktails</option></select></label>
         <label><span class="mb-1 block text-[.68rem] font-extrabold tracking-wider uppercase">Category</span><select id="category-filter" class="min-h-12 w-full border border-green/25 bg-paper px-3 lg:w-48"><option value="">All categories</option>{categories.map(category => <option value={category.toLowerCase()}>{category}</option>)}</select></label>
-        {tags.length > 0 && <div class="lg:col-span-3"><p class="mb-2 text-[.68rem] font-extrabold tracking-wider uppercase">Tags</p><div id="tag-filters" class="flex flex-wrap gap-2"><button type="button" data-tag="" aria-pressed="true" class="tag-filter border border-green bg-green px-3 py-2 text-xs font-bold text-cream">All</button>{tags.map(tag => <button type="button" data-tag={tag.toLowerCase()} aria-pressed="false" class="tag-filter border border-green/25 px-3 py-2 text-xs font-bold">{tag}</button>)}</div></div>}
+        {tags.length > 0 && <div class="lg:col-span-3"><p class="mb-2 text-[.68rem] font-extrabold tracking-wider uppercase">Tags</p><div id="tag-filters" class="flex flex-wrap gap-2"><button type="button" data-tag="" aria-pressed="true" class="tag-filter border border-green bg-green px-3 py-2 text-xs font-bold text-cream">All</button>{tags.map(tag => <button type="button" data-tag={tag.toLowerCase()} aria-pressed="false" class="tag-filter border border-brass/60 bg-cream px-3 py-2 text-xs font-bold transition hover:border-burgundy">{tag}</button>)}</div></div>}
       </section>
       <p id="result-count" class="mb-5 text-xs font-bold tracking-wider uppercase" aria-live="polite">Showing {recipes.length} development {recipes.length === 1 ? 'recipe' : 'recipes'}</p>
       <div id="recipe-grid" class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{recipes.map(recipe => <RecipeCard recipe={recipe} />)}</div>

@@ -1,4 +1,4 @@
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawn } from 'node:child_process';
@@ -7,6 +7,7 @@ const base = process.env.TEST_BASE_URL ?? 'http://127.0.0.1:4321';
 const chromePath = process.env.CHROME_PATH ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const profile = await mkdtemp(join(tmpdir(), 'tipsy-goose-chrome-'));
 const port = 9333;
+const screenshotDir = process.env.SCREENSHOT_DIR;
 const chrome = spawn(chromePath, [
   '--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
   `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`, 'about:blank',
@@ -51,6 +52,13 @@ async function navigate(path) {
   throw new Error(`Timed out loading ${path}`);
 }
 
+async function screenshot(name) {
+  if (!screenshotDir) return;
+  await mkdir(screenshotDir, { recursive: true });
+  const result = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+  await writeFile(join(screenshotDir, `${name}.png`), Buffer.from(result.result.data, 'base64'));
+}
+
 function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
@@ -71,6 +79,7 @@ try {
 
   await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await navigate('/recipes/');
+  await screenshot('recipes-mobile');
   assert(await evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Recipe archive overflows at 390px.');
   const overflow = await evaluate(`[...document.querySelectorAll('body *')]
     .filter(element => { const style = getComputedStyle(element); const rect = element.getBoundingClientRect(); return style.display !== 'none' && (rect.right > innerWidth + 1 || rect.left < -1); })
@@ -91,6 +100,7 @@ try {
 
   await send('Emulation.setDeviceMetricsOverride', { width: 834, height: 1194, deviceScaleFactor: 1, mobile: true });
   await navigate('/recipes/smoky-citrus-chicken/');
+  await screenshot('recipe-tablet');
   assert(await evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Recipe page overflows at iPad width.');
   const scaled = await evaluate(`(() => {
     const select = document.querySelector('#serving-adjuster'); select.value = '2'; select.dispatchEvent(new Event('change', { bubbles: true }));
@@ -112,6 +122,17 @@ try {
   }))()`);
   assert(print.header === 'none' && print.intro === 'none' && print.sheet !== 'none', 'Print view did not hide chrome while retaining the recipe.');
   assert(print.columns.split(' ').length >= 2, 'Print recipe did not retain ingredient/instruction columns.');
+
+  await send('Emulation.setEmulatedMedia', { media: 'screen' });
+  await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false });
+  await navigate('/');
+  await screenshot('home-desktop');
+  await send('Emulation.setDeviceMetricsOverride', { width: 834, height: 1194, deviceScaleFactor: 1, mobile: true });
+  await navigate('/menus/citrus-supper/');
+  await screenshot('menu-tablet');
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await navigate('/');
+  await screenshot('home-mobile');
 
   console.log('Browser smoke test passed: mobile overflow, search/type filters, iPad recipe layout, serving adjustment, checkboxes, and print media.');
 } finally {

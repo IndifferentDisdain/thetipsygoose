@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Ornament from '../components/Ornament.astro';
 ---
 <BaseLayout title="About" description="Why The Tipsy Goose is exploring a more personal, capable, and honest alternative to meal kit delivery.">
-  <header class="bg-green text-cream"><div class="shell py-20 lg:py-28"><p class="eyebrow text-[#d2a866]">About the project</p><h1 class="mt-7 max-w-5xl font-display text-[clamp(4rem,10vw,8rem)] leading-[.84] tracking-[-.055em]">Dinner deserves better than autopilot.</h1></div></header>
+  <header class="page-masthead"><div class="shell relative z-10 py-14 lg:py-20"><p class="eyebrow text-brass-bright">About the project</p><h1 class="mt-7 max-w-5xl font-display text-[clamp(3.2rem,7vw,6.3rem)] leading-[.9] tracking-[-.04em]">Dinner deserves better than autopilot.</h1></div></header>
   <div class="shell grid gap-14 py-16 lg:grid-cols-[.7fr_1.3fr] lg:py-24">
-    <aside class="lg:sticky lg:top-8 lg:self-start"><p class="eyebrow">The short version</p><p class="mt-5 font-display text-4xl leading-[1.08]">Use the machine for range. Use the kitchen for truth.</p></aside>
+    <aside class="lg:sticky lg:top-8 lg:self-start"><p class="eyebrow">The short version</p><Ornament class="mt-5 text-brass" compact /><p class="mt-7 font-display text-4xl leading-[1.08]">Use the machine for range. Use the kitchen for truth.</p></aside>
     <article class="prose max-w-3xl">
       <p>The Tipsy Goose is a home cooking and cocktail publication built around a simple suspicion: the planning convenience of a meal kit does not require the box.</p>
       <p>Generative AI can help turn a peculiar set of constraints—what you like, what is in the refrigerator, how much time is left, which cuisine you are curious about—into a useful starting point. Ordinary grocery stores supply the ingredients. Human creativity sets the direction. Cooking supplies the evidence.</p>

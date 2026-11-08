@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "SHOW_FIXTURES=true astro dev",
+    "prepare:brand": "node scripts/prepare-brand-assets.mjs",
     "build": "astro check && astro build",
     "build:fixtures": "SHOW_FIXTURES=true astro build",
     "preview": "astro preview",
@@ -17,6 +18,8 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",
+    "@fontsource-variable/cormorant": "^5.3.0",
+    "@fontsource-variable/source-serif-4": "^5.3.1",
     "@tailwindcss/vite": "4.3.5",
     "astro": "7.4.7",
     "tailwindcss": "4.3.5"

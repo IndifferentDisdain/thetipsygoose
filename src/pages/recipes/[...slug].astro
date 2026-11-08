@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
+import Ornament from '../../components/Ornament.astro';
 import { getRecipes, isFixture, minutesToIso, slugFor, type RecipeEntry } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -46,9 +47,9 @@ const formatQuantity = (n: number) => {
 <BaseLayout title={d.title} description={d.description} type="article" noindex={fixture} jsonLd={jsonLd} image={d.heroImage?.src}>
   {fixture && <div class="fixture-ribbon">Development fixture · not tested for publication · excluded from production</div>}
   <article>
-    <header class="recipe-intro bg-green text-cream">
-      <div class="shell grid gap-12 py-16 lg:grid-cols-[1fr_.45fr] lg:items-end lg:py-24">
-        <div><div class="flex flex-wrap items-center gap-3"><p class="eyebrow text-[#d2a866]">{d.kind} · {d.category}</p><StatusBadge status={d.editorialStatus}/></div><h1 class="mt-7 font-display text-[clamp(3.6rem,8vw,7.3rem)] leading-[.86] tracking-[-.055em]">{d.title}</h1><p class="mt-7 max-w-2xl text-lg leading-8 text-cream/75">{d.description}</p><div class="mt-8 flex flex-wrap gap-3"><a href="#recipe" class="button border-cream text-cream">Jump to recipe</a><button type="button" class="button border-cream/30 text-cream" onclick="window.print()">Print</button></div></div>
+    <header class="recipe-intro page-masthead">
+      <div class="shell relative z-10 grid gap-12 py-14 lg:grid-cols-[1fr_.45fr] lg:items-end lg:py-20">
+        <div><div class="flex flex-wrap items-center gap-3"><p class="eyebrow text-brass-bright">{d.kind} · {d.category}</p><StatusBadge status={d.editorialStatus}/></div><h1 class="mt-7 font-display text-[clamp(3.1rem,7vw,6rem)] leading-[.9] tracking-[-.04em]">{d.title}</h1><p class="mt-7 max-w-2xl text-lg leading-8 text-cream/75">{d.description}</p><div class="mt-8 flex flex-wrap gap-3"><a href="#recipe" class="button border-cream text-cream">Jump to recipe</a><button type="button" class="button border-cream/30 text-cream" onclick="window.print()">Print</button></div></div>
         <dl class="grid grid-cols-2 border border-cream/25 text-center">
           {d.times.prep !== undefined && <div class="border-b border-r border-cream/20 p-4"><dt class="text-[.65rem] font-bold tracking-wider uppercase text-cream/50">Prep</dt><dd class="mt-1 font-display text-2xl">{d.times.prep} min</dd></div>}
           {d.times.cook !== undefined && <div class="border-b border-cream/20 p-4"><dt class="text-[.65rem] font-bold tracking-wider uppercase text-cream/50">Cook</dt><dd class="mt-1 font-display text-2xl">{d.times.cook} min</dd></div>}
@@ -58,12 +59,13 @@ const formatQuantity = (n: number) => {
       </div>
     </header>
 
-    <div class="shell grid gap-10 py-14 lg:grid-cols-[1fr_.34fr] lg:items-start">
+    <div class="shell grid gap-10 py-12 lg:grid-cols-[1fr_.34fr] lg:items-start lg:py-16">
       <div>
+        <Ornament class="mb-9 text-brass" />
         <div class="prose max-w-3xl"><Content /></div>
-        <section id="recipe" class="recipe-sheet mt-14 scroll-mt-6 border border-green/25 bg-paper p-5 sm:p-8">
+        <section id="recipe" class="recipe-sheet menu-sheet mt-14 scroll-mt-6 p-5 sm:p-8">
           <div class="flex flex-wrap items-end justify-between gap-5 border-b border-green/20 pb-6">
-            <div><p class="eyebrow">The working recipe</p><h2 class="mt-3 text-5xl tracking-[-.04em]">{d.title}</h2></div>
+            <div><p class="eyebrow">The working recipe</p><h2 class="mt-3 text-4xl tracking-[-.025em] sm:text-5xl">{d.title}</h2></div>
             <label class="no-print text-xs font-bold tracking-wider uppercase">Servings
               <select id="serving-adjuster" data-base-yield={d.yield.amount} class="ml-2 min-h-11 border border-green/30 bg-cream px-3">
                 {[0.5, 1, 1.5, 2].map(multiplier => <option value={multiplier} selected={multiplier === 1}>{formatQuantity(d.yield.amount * multiplier)} {d.yield.unit}</option>)}
@@ -73,11 +75,11 @@ const formatQuantity = (n: number) => {
           <div class="recipe-columns mt-8 grid gap-10 md:grid-cols-[.85fr_1.15fr]">
             <div>
               <h2 class="text-3xl">Ingredients</h2>
-              {d.ingredientGroups.map(group => <section class="mt-7"><h3 class="text-xl italic">{group.name}</h3><ul class="mt-3 list-none space-y-3 p-0">{group.ingredients.map(ingredient => <li><label class="group flex cursor-pointer items-start gap-3 text-sm leading-6"><input type="checkbox" class="ingredient-check mt-1 h-4 w-4 accent-green"/><span class="group-has-checked:line-through group-has-checked:opacity-45">{ingredient.quantity && <strong class="ingredient-quantity" data-base={ingredient.quantity}>{formatQuantity(ingredient.quantity)}</strong>} {ingredient.unit} {ingredient.item}{ingredient.note && <span class="text-ink/55">, {ingredient.note}</span>}</span></label></li>)}</ul></section>)}
+              {d.ingredientGroups.map(group => <section class="mt-7"><h3 class="text-xl italic">{group.name}</h3><ul class="mt-3 list-none space-y-3 p-0">{group.ingredients.map(ingredient => <li><label class="group flex cursor-pointer items-start gap-3 text-[.96rem] leading-6"><input type="checkbox" class="ingredient-check mt-1 h-4 w-4 accent-green"/><span class="group-has-checked:line-through group-has-checked:opacity-45">{ingredient.quantity && <strong class="ingredient-quantity" data-base={ingredient.quantity}>{formatQuantity(ingredient.quantity)}</strong>} {ingredient.unit} {ingredient.item}{ingredient.note && <span class="text-ink/55">, {ingredient.note}</span>}</span></label></li>)}</ul></section>)}
             </div>
             <div>
               <h2 class="text-3xl">Instructions</h2>
-              {d.instructionGroups.map(group => <section class="mt-7"><h3 class="text-xl italic">{group.name}</h3><ol class="mt-4 space-y-6 pl-7">{group.steps.map(step => <li class="pl-2 text-sm leading-6 marker:font-display marker:text-xl marker:text-rust">{step}</li>)}</ol></section>)}
+              {d.instructionGroups.map(group => <section class="mt-7"><h3 class="text-xl italic">{group.name}</h3><ol class="mt-4 space-y-6 pl-7">{group.steps.map(step => <li class="pl-2 text-[.98rem] leading-7 marker:font-display marker:text-xl marker:text-rust">{step}</li>)}</ol></section>)}
             </div>
           </div>
         </section>

@@ -1,12 +1,21 @@
-<footer class="mt-24 bg-green text-cream">
-  <div class="shell grid gap-10 py-12 md:grid-cols-[1fr_auto] md:items-end">
-    <div>
-      <p class="font-display text-4xl tracking-[-.04em]">The Tipsy Goose</p>
+---
+import { Image } from 'astro:assets';
+import Ornament from './Ornament.astro';
+import gooseEmblem from '../assets/brand/goose-emblem.png';
+---
+<footer class="mt-24 border-t border-brass bg-green text-paper">
+  <div class="shell py-12">
+    <Ornament class="mx-auto text-brass" />
+    <div class="mt-8 grid gap-10 md:grid-cols-[1fr_auto] md:items-end">
+    <div class="flex items-start gap-4">
+      <Image src={gooseEmblem} alt="" width={58} height={66} class="h-20 w-auto object-contain" />
+      <div><p class="font-display text-4xl font-semibold tracking-[-.03em]">The Tipsy Goose</p>
       <p class="mt-3 max-w-xl text-sm text-cream/70">Dinner, drinks, and the useful kind of experimentation. Built for home kitchens, grocery-store ingredients, and people who would rather make the evening their own.</p>
+      </div>
     </div>
     <div class="text-left text-xs font-bold tracking-[.1em] uppercase md:text-right">
       <a href="/about" class="underline decoration-brass underline-offset-4">About the project</a>
       <p class="mt-3 text-cream/50">© {new Date().getFullYear()} The Tipsy Goose</p>
-    </div>
+    </div></div>
   </div>
 </footer>

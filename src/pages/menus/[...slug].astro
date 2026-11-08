@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
+import Ornament from '../../components/Ornament.astro';
 import { getMenus, isFixture, slugFor, type MenuEntry } from '../../lib/content';
 export async function getStaticPaths() { return (await getMenus()).map(menu => ({ params: { slug: slugFor(menu) }, props: { menu } })); }
 interface Props { menu: MenuEntry }
@@ -11,9 +12,16 @@ const fixture = isFixture(menu);
 ---
 <BaseLayout title={menu.data.title} description={menu.data.description} type="article" noindex={fixture}>
   {fixture && <div class="fixture-ribbon">Development fixture · excluded from production</div>}
-  <header class="bg-green py-20 text-cream"><div class="shell"><div class="flex gap-4"><p class="eyebrow text-[#d2a866]">Dinner menu · serves {menu.data.servings}</p><StatusBadge status={menu.data.editorialStatus}/></div><h1 class="mt-7 max-w-5xl font-display text-[clamp(3.5rem,8vw,7rem)] leading-[.87] tracking-[-.05em]">{menu.data.title}</h1><p class="mt-7 max-w-2xl text-lg text-cream/70">{menu.data.description}</p></div></header>
-  <div class="shell grid gap-14 py-16 lg:grid-cols-[.75fr_1.25fr]">
-    <section><p class="eyebrow">On the menu</p><ol class="mt-6 space-y-5">{menu.data.recipes.map(item => <li><p class="text-xs font-bold tracking-wider uppercase text-ink/50">{item.course}</p><a href={`/recipes/${item.slug}/`} class="mt-1 block font-display text-3xl decoration-brass underline-offset-4">{item.slug.split('-').map(word => word[0].toUpperCase() + word.slice(1)).join(' ')}</a></li>)}</ol></section>
-    <section><p class="eyebrow">Service timeline</p><ol class="mt-6 divide-y divide-green/20 border-y border-green/20">{menu.data.timeline.map(item => <li class="grid grid-cols-[7rem_1fr] gap-4 py-4"><strong class="text-xs tracking-wider uppercase text-rust">{item.offset}</strong><span>{item.task}</span></li>)}</ol><div class="prose mt-12"><Content /></div></section>
+  <header class="page-masthead"><div class="shell relative z-10 py-14 text-center lg:py-20"><div class="flex flex-wrap justify-center gap-4"><p class="eyebrow text-brass-bright">Dinner menu · serves {menu.data.servings}</p><StatusBadge status={menu.data.editorialStatus}/></div><h1 class="mx-auto mt-7 max-w-5xl font-display text-[clamp(3.1rem,7vw,6rem)] leading-[.9] tracking-[-.035em]">{menu.data.title}</h1><p class="mx-auto mt-7 max-w-2xl text-lg italic text-cream/72">{menu.data.description}</p></div></header>
+  <div class="shell py-12 lg:py-16">
+    <section class="menu-sheet mx-auto max-w-4xl px-6 py-12 text-center sm:px-12 lg:px-20 lg:py-16">
+      <p class="eyebrow">On the menu</p><Ornament class="mx-auto mt-5 text-brass" />
+      <ol class="mt-10 list-none p-0">{menu.data.recipes.map(item => <li class="menu-course"><p class="font-sans text-[.65rem] font-bold tracking-[.19em] text-green uppercase">{item.course}</p><a href={`/recipes/${item.slug}/`} class="mt-2 block font-display text-3xl decoration-brass underline-offset-7 sm:text-4xl">{item.slug.split('-').map(word => word[0].toUpperCase() + word.slice(1)).join(' ')}</a></li>)}</ol>
+      <Ornament class="mx-auto mt-12 text-brass" compact />
+    </section>
+    <div class="mx-auto mt-14 grid max-w-5xl gap-12 lg:grid-cols-[.9fr_1.1fr]">
+    <section><p class="eyebrow">Service timeline</p><ol class="mt-6 divide-y divide-brass/35 border-y border-brass/50">{menu.data.timeline.map(item => <li class="grid grid-cols-[6.5rem_1fr] gap-4 py-4 sm:grid-cols-[7rem_1fr]"><strong class="font-sans text-xs tracking-wider text-rust uppercase">{item.offset}</strong><span>{item.task}</span></li>)}</ol></section>
+    <section><div class="prose"><Content /></div></section>
+    </div>
   </div>
 </BaseLayout>

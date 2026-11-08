@@ -11,7 +11,7 @@ The production site is intentionally in a polished prelaunch state until real ed
 - Astro Content Collections with Zod schema validation
 - Astro sitemap generation and locally managed assets
 - Netlify static hosting configuration
-- GitHub Actions validation and deployment
+- GitHub Actions validation with deployment through Netlify's Git integration
 
 Node 22 is the supported development and CI runtime.
 
@@ -30,6 +30,7 @@ npm run build          # production build; fixtures excluded
 npm run verify         # asserts key output and no fixture leakage
 npm run build:fixtures # optional static fixture build for interaction QA
 npm run preview        # preview the most recent build
+npm run prepare:brand  # rebuild the derived emblem and social card
 ```
 
 Do not set `SHOW_FIXTURES=true` in production. `netlify.toml` explicitly sets it to `false`.
@@ -68,7 +69,9 @@ Only apply `kitchen-tested` when that is true. Use `statusNote` on recipes to cl
 
 Do not use generated or unrelated food photography to stand in for a cooked dish. Add original, properly licensed photographs beside the content that they depict. Store source images with the relevant content or under `src/assets/`, reference them through the content collection `image()` field, and provide factual alt text in `heroAlt`. Astro will optimize imported images at build time.
 
-The current social card and monogram are restrained temporary SVG marks, not final goose artwork. Replace them when the final brand artwork is available.
+The supplied brand originals live in `src/assets/brand/source/`. The header and footer use a deterministic crop of the exact goose medallion; the social card is derived from the supplied pub banner. Run `npm run prepare:brand` after replacing those originals. The preparation script only crops, resizes, compresses, and samples colors—it does not redraw or generatively reinterpret the character.
+
+Keep the source artwork's aspect ratio intact. Recipe photographs remain a separate editorial concern: do not use the goose artwork, generated food imagery, or unrelated photographs to imply that a dish was cooked.
 
 ## Interaction and accessibility notes
 
@@ -84,15 +87,12 @@ The repository contains `netlify.toml`, which tells Netlify to run `npm run buil
 
 The GitHub workflow `ci.yml` independently installs, validates, builds, and verifies pull requests. Netlify's Git integration owns production deployment from `main`; no Netlify token is stored in this repository or required by GitHub Actions.
 
-### Remaining launch steps
+### Deployment checks
 
-1. In the connected Netlify site, confirm the production branch is `main`. Build settings should resolve from `netlify.toml`: command `npm run build`, publish directory `dist`.
-2. Trigger or observe the first production deploy from the latest `main` commit. Verify that Netlify reports the build and deploy as successful.
-3. Test the Netlify-generated hostname: navigation, search/filtering, a real 404 response, `robots.txt`, `sitemap-index.xml`, canonical/social metadata, and response security headers.
-4. In **Domain management**, add `thetipsygoose.com` and `www.thetipsygoose.com`. Make the apex domain primary because canonical URLs currently use `https://thetipsygoose.com`; Netlify should redirect the alias to the primary domain.
-5. At the DNS host, add only the records Netlify displays for the custom domains. DNS targets vary depending on whether Netlify DNS or external DNS is used.
-6. Wait for Netlify to show DNS verification and TLS certificate provisioning as complete, then verify HTTPS and redirects at both hostnames.
-7. Add real editorial content and original photographs through a pull request. Confirm editorial status, Recipe JSON-LD, responsive layout, and print view before merging.
+1. Keep the production branch set to `main`. Build settings resolve from `netlify.toml`: command `npm run build`, publish directory `dist`.
+2. After merging or pushing, verify the Netlify deploy completed successfully and inspect both the Netlify hostname and `https://thetipsygoose.com` over HTTPS.
+3. Test navigation, a real 404 response, `robots.txt`, `sitemap-index.xml`, canonical/social metadata, the apex/`www` redirect, and response security headers.
+4. Add real editorial content and original photographs through a pull request. Confirm editorial status, Recipe JSON-LD, responsive layout, and print view before merging.
 
 The domain should not be described as live until the Netlify deploy, DNS, redirect, and TLS checks above have passed.
 
