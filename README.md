@@ -85,6 +85,8 @@ The repository contains `staticwebapp.config.json` and two workflows:
 - `ci.yml` installs, validates, builds, and verifies pull requests.
 - `azure-static-web-apps.yml` repeats those checks on `main` and deploys the already-built `dist/` directory.
 
+Until the Azure deployment token secret exists, the workflow still builds and verifies successfully but intentionally skips its deploy step.
+
 Credentials must remain in GitHub Actions secrets. Nothing sensitive belongs in this repository.
 
 ### Remaining launch steps
