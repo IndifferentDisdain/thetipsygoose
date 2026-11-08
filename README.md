@@ -10,7 +10,7 @@ The production site is intentionally in a polished prelaunch state until real ed
 - Tailwind CSS 4 through the official Vite integration
 - Astro Content Collections with Zod schema validation
 - Astro sitemap generation and locally managed assets
-- Azure Static Web Apps configuration
+- Netlify static hosting configuration
 - GitHub Actions validation and deployment
 
 Node 22 is the supported development and CI runtime.
@@ -32,7 +32,7 @@ npm run build:fixtures # optional static fixture build for interaction QA
 npm run preview        # preview the most recent build
 ```
 
-Do not set `SHOW_FIXTURES=true` in production or in the Azure deployment workflow.
+Do not set `SHOW_FIXTURES=true` in production. `netlify.toml` explicitly sets it to `false`.
 
 ## Content authoring
 
@@ -78,30 +78,24 @@ The current social card and monogram are restrained temporary SVG marks, not fin
 - Print CSS removes navigation, controls, narrative, and side notes while retaining the recipe title, ingredients, and instructions.
 - Fixture pages carry `noindex,nofollow`; production builds generate no fixture routes at all.
 
-## Azure Static Web Apps deployment
+## Netlify deployment
 
-The repository contains `staticwebapp.config.json` and two workflows:
+The repository contains `netlify.toml`, which tells Netlify to run `npm run build`, publish `dist/`, use Node 22, keep development fixtures disabled, apply security headers, and cache Astro's fingerprinted assets. Netlify automatically serves `dist/404.html` for missing static routes.
 
-- `ci.yml` installs, validates, builds, and verifies pull requests.
-- `azure-static-web-apps.yml` repeats those checks on `main` and deploys the already-built `dist/` directory.
-
-Until the Azure deployment token secret exists, the workflow still builds and verifies successfully but intentionally skips its deploy step.
-
-Credentials must remain in GitHub Actions secrets. Nothing sensitive belongs in this repository.
+The GitHub workflow `ci.yml` independently installs, validates, builds, and verifies pull requests. Netlify's Git integration owns production deployment from `main`; no Netlify token is stored in this repository or required by GitHub Actions.
 
 ### Remaining launch steps
 
-1. In the intended Azure subscription, create a new Azure Static Web App for The Tipsy Goose. Do not reuse or modify any Byte4Bite resource.
-2. Choose GitHub as the source and select `IndifferentDisdain/thetipsygoose`, branch `main`. If Azure offers to create a workflow, cancel or remove that generated workflow; this repository already has one.
-3. Copy the new Static Web App deployment token into the repository secret `AZURE_STATIC_WEB_APPS_API_TOKEN_THE_TIPSY_GOOSE` under **Settings → Secrets and variables → Actions**.
-4. Run **Deploy to Azure Static Web Apps** from GitHub Actions and verify the Azure-provided hostname, navigation, the 404 response, sitemap, and security headers.
-5. In the Azure Static Web App, add both `thetipsygoose.com` and `www.thetipsygoose.com` as custom domains. Follow Azure's displayed validation records exactly; record names and targets vary by DNS provider and Azure resource.
-6. At the DNS host, add only the validation and CNAME/ALIAS records Azure requests. Decide which hostname is canonical (the code currently uses the apex `https://thetipsygoose.com`) and configure the other hostname to redirect there.
-7. Wait for Azure to show certificate and custom-domain status as valid, then verify HTTPS at both hostnames, canonical tags, `robots.txt`, `sitemap-index.xml`, social metadata, and a real 404 response.
-8. Add real editorial content and original photographs through a pull request. Confirm the content status, recipe structured data, responsive layout, and print view before merging.
+1. In the connected Netlify site, confirm the production branch is `main`. Build settings should resolve from `netlify.toml`: command `npm run build`, publish directory `dist`.
+2. Trigger or observe the first production deploy from the latest `main` commit. Verify that Netlify reports the build and deploy as successful.
+3. Test the Netlify-generated hostname: navigation, search/filtering, a real 404 response, `robots.txt`, `sitemap-index.xml`, canonical/social metadata, and response security headers.
+4. In **Domain management**, add `thetipsygoose.com` and `www.thetipsygoose.com`. Make the apex domain primary because canonical URLs currently use `https://thetipsygoose.com`; Netlify should redirect the alias to the primary domain.
+5. At the DNS host, add only the records Netlify displays for the custom domains. DNS targets vary depending on whether Netlify DNS or external DNS is used.
+6. Wait for Netlify to show DNS verification and TLS certificate provisioning as complete, then verify HTTPS and redirects at both hostnames.
+7. Add real editorial content and original photographs through a pull request. Confirm editorial status, Recipe JSON-LD, responsive layout, and print view before merging.
 
-The domain should not be described as live until the Azure deployment and DNS/certificate checks in steps 4–7 have passed.
+The domain should not be described as live until the Netlify deploy, DNS, redirect, and TLS checks above have passed.
 
 ## Reference boundary
 
-Byte4Bite was inspected only as a technical reference for Astro content structure and Azure Static Web Apps conventions. No Byte4Bite recipes, branding, editorial content, source files, cloud resources, or deployed-site changes are part of this repository.
+Byte4Bite was inspected only as a technical reference for Astro content structure and static-hosting conventions. No Byte4Bite recipes, branding, editorial content, source files, hosting resources, or deployed-site changes are part of this repository.
