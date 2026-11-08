@@ -1,0 +1,30 @@
+---
+const path = Astro.url.pathname;
+const links = [
+  ['/recipes', 'Recipes'],
+  ['/menus', 'Dinner menus'],
+  ['/notes', 'Kitchen notes'],
+  ['/about', 'About'],
+];
+---
+<header class="border-b border-green/20 bg-cream/95">
+  <div class="shell flex min-h-22 items-center justify-between gap-5 py-4">
+    <a href="/" class="group flex items-center gap-3 no-underline" aria-label="The Tipsy Goose home">
+      <span class="flex h-11 w-11 items-center justify-center rounded-full border border-brass text-xl text-green transition group-hover:rotate-6" aria-hidden="true">TG</span>
+      <span class="font-display text-xl leading-none tracking-[-.04em] sm:text-3xl">The Tipsy Goose</span>
+    </a>
+    <nav aria-label="Primary" class="hidden md:block">
+      <ul class="flex list-none items-center gap-7 p-0 text-[.7rem] font-extrabold tracking-[.13em] uppercase">
+        {links.map(([href, label]) => <li><a href={href} aria-current={path.startsWith(href) ? 'page' : undefined} class:list={["no-underline hover:text-rust", { "text-rust": path.startsWith(href) }]}>{label}</a></li>)}
+      </ul>
+    </nav>
+    <details class="relative md:hidden">
+      <summary class="cursor-pointer list-none border border-green/30 px-3 py-2 text-xs font-bold uppercase tracking-wider">Menu</summary>
+      <nav aria-label="Mobile" class="absolute right-0 z-40 mt-2 w-56 border border-green/20 bg-paper p-3 shadow-xl">
+        <ul class="m-0 list-none p-0">
+          {links.map(([href, label]) => <li><a href={href} class="block px-3 py-3 text-sm font-bold no-underline">{label}</a></li>)}
+        </ul>
+      </nav>
+    </details>
+  </div>
+</header>

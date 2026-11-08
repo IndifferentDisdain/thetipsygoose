@@ -1,0 +1,15 @@
+---
+interface Props { type: 'recipes' | 'menus' | 'notes' }
+const { type } = Astro.props;
+const copy = {
+  recipes: ['The first round is in the kitchen.', 'Real recipes will appear here only after they have an honest editorial status. No placeholder dishes dressed up as dinner.'],
+  menus: ['A good evening needs a little choreography.', 'Dinner menus—with linked recipes and a practical service timeline—are being cooked, timed, and written.'],
+  notes: ['The notebook is open.', 'Technique discoveries, experiments, and useful mistakes will land here once they are ready to be useful to someone else.'],
+};
+---
+<div class="card paper-grid px-6 py-16 text-center sm:px-12">
+  <p class="eyebrow">Prelaunch</p>
+  <h2 class="mx-auto mt-4 max-w-2xl text-5xl tracking-[-.04em]">{copy[type][0]}</h2>
+  <p class="mx-auto mt-5 max-w-xl text-ink/65">{copy[type][1]}</p>
+  <a href="/about" class="button mt-8">Why we’re doing this</a>
+</div>

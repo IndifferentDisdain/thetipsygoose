@@ -1,0 +1,16 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { getNotes, isFixture, slugFor, type NoteEntry } from '../../lib/content';
+export async function getStaticPaths() { return (await getNotes()).map(note => ({ params: { slug: slugFor(note) }, props: { note } })); }
+interface Props { note: NoteEntry }
+const { note } = Astro.props;
+const { Content } = await render(note);
+const fixture = isFixture(note);
+---
+<BaseLayout title={note.data.title} description={note.data.description} type="article" noindex={fixture}>
+  {fixture && <div class="fixture-ribbon">Development fixture · excluded from production</div>}
+  <header class="shell py-16 lg:py-24"><div class="flex flex-wrap gap-4"><p class="eyebrow">{note.data.topic}</p><StatusBadge status={note.data.editorialStatus}/></div><h1 class="mt-7 max-w-5xl font-display text-[clamp(3.4rem,8vw,7rem)] leading-[.88] tracking-[-.05em]">{note.data.title}</h1><p class="mt-7 max-w-2xl text-lg leading-8 text-ink/65">{note.data.description}</p></header>
+  <div class="shell"><article class="prose max-w-3xl border-t border-green/20 pt-12"><Content /></article></div>
+</BaseLayout>

@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { getMenus, isFixture, showFixtures, slugFor } from '../../lib/content';
+const menus = await getMenus();
+---
+<BaseLayout title="Dinner Menus" description="Coordinated dinner menus with linked recipes and practical preparation and service timelines." noindex={showFixtures && menus.length > 0}>
+  {showFixtures && <div class="fixture-ribbon">Development preview · fixture content is visible and will not ship</div>}
+  <header class="shell py-16 lg:py-24"><p class="eyebrow">A whole evening</p><h1 class="section-title mt-5 max-w-4xl">Dinner is more than several recipes arriving at once.</h1><p class="mt-7 max-w-2xl text-lg leading-8 text-ink/65">Coordinated menus with the order of operations included—because timing is an ingredient, and nobody wants the host trapped at the stove.</p></header>
+  <section class="shell">
+    {menus.length ? <div class="grid gap-5 md:grid-cols-2">{menus.map(menu => <article class="card p-6"><div class="flex justify-between gap-4"><p class="eyebrow">Serves {menu.data.servings}</p>{isFixture(menu) && <span class="text-xs font-bold text-rust uppercase">Fixture</span>}</div><h2 class="mt-12 text-5xl tracking-[-.04em]"><a href={`/menus/${slugFor(menu)}/`} class="no-underline">{menu.data.title}</a></h2><p class="mt-5 text-ink/65">{menu.data.description}</p><div class="mt-7"><StatusBadge status={menu.data.editorialStatus}/></div></article>)}</div> : <EmptyState type="menus" />}
+  </section>
+</BaseLayout>

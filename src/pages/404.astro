@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Page Not Found" description="That page has wandered off. Return to The Tipsy Goose kitchen." noindex={true}>
+  <section class="shell flex min-h-[64vh] items-center py-20">
+    <div class="grid w-full gap-12 lg:grid-cols-[.45fr_1fr] lg:items-end">
+      <p class="font-display text-[11rem] leading-[.7] text-brass">404</p>
+      <div><p class="eyebrow">Loose goose</p><h1 class="section-title mt-5">This page flew the coop.</h1><p class="mt-6 max-w-xl text-lg text-ink/65">The link may be stale, the address may have a typo, or somebody left the pantry door open.</p><div class="mt-8 flex flex-wrap gap-3"><a href="/" class="button button--solid">Back to the kitchen</a><a href="/recipes" class="button">Browse recipes</a></div></div>
+    </div>
+  </section>
+</BaseLayout>

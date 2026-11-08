@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">The Tipsy Goose</title>
+  <desc id="desc">Dinner, drinks, and better ideas for cooking at home.</desc>
+  <rect width="1200" height="630" fill="#f3ecdc"/>
+  <rect x="38" y="38" width="1124" height="554" rx="4" fill="none" stroke="#b58a49" stroke-width="2"/>
+  <circle cx="600" cy="178" r="54" fill="#153b32"/>
+  <path d="M575 178h50M600 153v50" stroke="#f3ecdc" stroke-width="2"/>
+  <text x="600" y="330" text-anchor="middle" font-family="Georgia, serif" font-size="92" fill="#153b32">The Tipsy Goose</text>
+  <text x="600" y="398" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" letter-spacing="5" fill="#8a6333">DINNER · DRINKS · BETTER IDEAS</text>
+</svg>

@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RecipeCard from '../components/RecipeCard.astro';
+import { getRecipes, showFixtures } from '../lib/content';
+const recipes = await getRecipes();
+const featured = recipes.slice(0, 3);
+---
+<BaseLayout title="The Tipsy Goose" description="A playful home cooking and cocktail publication about making dinner more personal, capable, and fun—with honest help from generative AI.">
+  {showFixtures && <div class="fixture-ribbon">Development preview · fixture content is visible and will not ship</div>}
+  <section class="relative overflow-hidden bg-green text-cream">
+    <div class="shell grid min-h-[690px] items-stretch lg:grid-cols-[1.25fr_.75fr]">
+      <div class="flex flex-col justify-between py-16 lg:py-24 lg:pr-16">
+        <p class="eyebrow text-[#d2a866]">Dinner should have a plot twist.</p>
+        <div class="py-16">
+          <h1 class="display max-w-4xl">A little less meal kit.<br/><em class="text-[#d2a866]">A lot more you.</em></h1>
+          <p class="mt-9 max-w-2xl text-lg leading-8 text-cream/78">The Tipsy Goose turns grocery-store ingredients, personal taste, and a well-aimed prompt into dinners worth lingering over. The ideas may start with AI. The judgment happens at the stove.</p>
+          <div class="mt-9 flex flex-wrap gap-3"><a href="/recipes" class="button border-cream text-cream">Browse the recipe book</a><a href="/about" class="button border-cream/30 text-cream">How this works</a></div>
+        </div>
+        <p class="max-w-lg border-l border-brass pl-5 text-sm text-cream/60">No mystery subscription box. No claim that an untested idea is a finished recipe. Just a better way to plan, learn, cook, revise—and pour something civilized.</p>
+      </div>
+      <div class="relative min-h-[430px] border-t border-cream/15 lg:border-t-0 lg:border-l">
+        <div class="absolute inset-6 border border-brass/60"></div>
+        <div class="absolute left-[14%] top-[12%] h-44 w-44 rounded-full border border-cream/20"></div>
+        <div class="absolute bottom-[12%] right-[9%] h-64 w-64 rounded-full bg-rust/70"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="relative z-10 w-[72%] rotate-[-4deg] border border-green bg-cream p-8 text-ink shadow-2xl">
+            <p class="eyebrow">Tonight’s brief</p>
+            <p class="mt-5 font-display text-4xl leading-[1.05]">Make it bright, smoky, and manageable by seven.</p>
+            <div class="rule my-7"></div>
+            <ol class="space-y-3 text-sm"><li>Use what is already here.</li><li>Learn one new move.</li><li>Fix what the first version got wrong.</li><li>Serve a drink that belongs.</li></ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell py-24">
+    <div class="grid gap-10 lg:grid-cols-[.85fr_1.15fr] lg:gap-24">
+      <div><p class="eyebrow">The proposition</p><h2 class="section-title mt-5">Convenience without surrendering dinner.</h2></div>
+      <div class="grid gap-8 text-base leading-7 text-ink/75 sm:grid-cols-2">
+        <p>Meal kits make decisions disappear. Useful, sometimes. But ordinary grocery stores plus a flexible plan can do more: match your appetite, use the half-bunch of parsley, teach a technique, and change when Tuesday goes sideways.</p>
+        <p>Generative AI helps sketch the possibilities and organize the work. Human taste decides what sounds good. Real cooking decides what survives publication. Every recipe tells you where it stands.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-paper py-24">
+    <div class="shell">
+      <div class="flex flex-wrap items-end justify-between gap-6"><div><p class="eyebrow">From the kitchen</p><h2 class="section-title mt-4">Recipes with receipts.</h2></div><a href="/recipes" class="button">Open the archive</a></div>
+      {featured.length ? <div class="mt-12 grid gap-5 md:grid-cols-3">{featured.map(recipe => <RecipeCard recipe={recipe} />)}</div> : <div class="mt-12 grid gap-5 md:grid-cols-3">
+        <div class="card p-6 md:col-span-2"><p class="eyebrow">Prelaunch</p><p class="mt-20 max-w-2xl font-display text-5xl leading-[1] tracking-[-.04em]">The pans are hot. The archive is not pretending to be full.</p><p class="mt-6 max-w-xl text-ink/65">The first recipes will arrive with clear testing status, structured ingredients, useful timing, and notes on what changed in the kitchen.</p></div>
+        <div class="bg-green p-6 text-cream"><p class="eyebrow text-[#d2a866]">What you’ll find</p><ul class="mt-12 space-y-5 font-display text-2xl"><li>Food & cocktails</li><li>Complete dinner menus</li><li>Technique notes</li><li>Honest experiments</li></ul></div>
+      </div>}
+    </div>
+  </section>
+
+  <section class="shell py-24">
+    <p class="eyebrow">The working method</p>
+    <div class="mt-7 grid border-y border-green/20 md:grid-cols-4">
+      {['Start with a real appetite', 'Ask for useful possibilities', 'Cook, notice, and adjust', 'Publish what we actually know'].map((item, i) => <div class="border-green/20 px-5 py-8 md:border-l first:md:border-l-0"><span class="font-display text-5xl text-brass">0{i + 1}</span><h3 class="mt-10 text-3xl">{item}</h3></div>)}
+    </div>
+  </section>
+</BaseLayout>

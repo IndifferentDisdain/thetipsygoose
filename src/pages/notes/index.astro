@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { getNotes, isFixture, showFixtures, slugFor } from '../../lib/content';
+const notes = await getNotes();
+---
+<BaseLayout title="Kitchen Notes" description="Techniques, cuisine discoveries, experiments, and lessons learned through real home cooking." noindex={showFixtures && notes.length > 0}>
+  {showFixtures && <div class="fixture-ribbon">Development preview · fixture content is visible and will not ship</div>}
+  <header class="shell py-16 lg:py-24"><p class="eyebrow">Kitchen notes</p><h1 class="section-title mt-5 max-w-4xl">Useful mistakes, small breakthroughs, and other things worth writing down.</h1></header>
+  <section class="shell">
+    {notes.length ? <div class="divide-y divide-green/20 border-y border-green/20">{notes.map(note => <article class="grid gap-5 py-9 md:grid-cols-[.28fr_1fr_auto] md:items-center"><div><p class="eyebrow">{note.data.topic}</p>{isFixture(note) && <p class="mt-2 text-xs font-bold text-rust uppercase">Fixture</p>}</div><div><h2 class="text-4xl tracking-[-.03em]"><a href={`/notes/${slugFor(note)}/`} class="no-underline">{note.data.title}</a></h2><p class="mt-3 text-sm text-ink/65">{note.data.description}</p></div><StatusBadge status={note.data.editorialStatus}/></article>)}</div> : <EmptyState type="notes" />}
+  </section>
+</BaseLayout>

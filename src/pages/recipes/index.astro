@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RecipeCard from '../../components/RecipeCard.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import { getRecipes, showFixtures } from '../../lib/content';
+const recipes = await getRecipes();
+const categories = [...new Set(recipes.map(recipe => recipe.data.category))].sort();
+const tags = [...new Set(recipes.flatMap(recipe => recipe.data.tags))].sort();
+---
+<BaseLayout title="Recipes" description="Food and cocktail recipes with structured ingredients, adjustable servings, and transparent kitchen-testing status." noindex={showFixtures && recipes.length > 0}>
+  {showFixtures && <div class="fixture-ribbon">Development preview · fixture content is visible and will not ship</div>}
+  <header class="shell grid gap-8 py-16 lg:grid-cols-[1fr_.65fr] lg:items-end lg:py-24">
+    <div><p class="eyebrow">The recipe book</p><h1 class="section-title mt-5">Cook the idea.<br/>Then improve it.</h1></div>
+    <p class="max-w-xl text-lg leading-8 text-ink/65">Food and cocktails designed around how people actually shop, cook, improvise, and entertain. Every entry carries an editorial status so you know what has met a pan and what is still a proposition.</p>
+  </header>
+  <div class="shell">
+    {recipes.length ? <>
+      <section class="card mb-8 grid gap-4 p-4 lg:grid-cols-[1fr_auto_auto]" aria-label="Recipe filters">
+        <label><span class="mb-1 block text-[.68rem] font-extrabold tracking-wider uppercase">Search</span><input id="recipe-search" type="search" placeholder="Try citrus, pasta, aperitif…" class="min-h-12 w-full border border-green/25 bg-paper px-3" /></label>
+        <label><span class="mb-1 block text-[.68rem] font-extrabold tracking-wider uppercase">Type</span><select id="kind-filter" class="min-h-12 w-full border border-green/25 bg-paper px-3 lg:w-40"><option value="">Everything</option><option value="food">Food</option><option value="cocktail">Cocktails</option></select></label>
+        <label><span class="mb-1 block text-[.68rem] font-extrabold tracking-wider uppercase">Category</span><select id="category-filter" class="min-h-12 w-full border border-green/25 bg-paper px-3 lg:w-48"><option value="">All categories</option>{categories.map(category => <option value={category.toLowerCase()}>{category}</option>)}</select></label>
+        {tags.length > 0 && <div class="lg:col-span-3"><p class="mb-2 text-[.68rem] font-extrabold tracking-wider uppercase">Tags</p><div id="tag-filters" class="flex flex-wrap gap-2"><button type="button" data-tag="" aria-pressed="true" class="tag-filter border border-green bg-green px-3 py-2 text-xs font-bold text-cream">All</button>{tags.map(tag => <button type="button" data-tag={tag.toLowerCase()} aria-pressed="false" class="tag-filter border border-green/25 px-3 py-2 text-xs font-bold">{tag}</button>)}</div></div>}
+      </section>
+      <p id="result-count" class="mb-5 text-xs font-bold tracking-wider uppercase" aria-live="polite">Showing {recipes.length} development {recipes.length === 1 ? 'recipe' : 'recipes'}</p>
+      <div id="recipe-grid" class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{recipes.map(recipe => <RecipeCard recipe={recipe} />)}</div>
+      <div id="no-results" class="card mt-5 hidden p-12 text-center"><h2 class="text-4xl">Nothing in that corner of the pantry.</h2><p class="mt-3 text-ink/60">Clear a filter and try again.</p></div>
+    </> : <EmptyState type="recipes" />}
+  </div>
+  <script>
+    const search = document.querySelector<HTMLInputElement>('#recipe-search');
+    const kind = document.querySelector<HTMLSelectElement>('#kind-filter');
+    const category = document.querySelector<HTMLSelectElement>('#category-filter');
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-recipe-card]')];
+    const count = document.querySelector<HTMLElement>('#result-count');
+    const noResults = document.querySelector<HTMLElement>('#no-results');
+    const tagButtons = [...document.querySelectorAll<HTMLButtonElement>('.tag-filter')];
+    let activeTag = '';
+    const filter = () => {
+      const query = search?.value.trim().toLowerCase() ?? '';
+      let visible = 0;
+      cards.forEach(card => {
+        const haystack = `${card.dataset.title} ${card.dataset.category} ${card.dataset.tags}`;
+        const matches = haystack.includes(query) && (!kind?.value || card.dataset.kind === kind.value) && (!category?.value || card.dataset.category === category.value) && (!activeTag || card.dataset.tags?.split('|').includes(activeTag));
+        card.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      if (count) count.textContent = `Showing ${visible} ${visible === 1 ? 'recipe' : 'recipes'}`;
+      noResults?.classList.toggle('hidden', visible !== 0);
+    };
+    search?.addEventListener('input', filter);
+    kind?.addEventListener('change', filter);
+    category?.addEventListener('change', filter);
+    tagButtons.forEach(button => button.addEventListener('click', () => {
+      activeTag = button.dataset.tag ?? '';
+      tagButtons.forEach(item => {
+        const on = item === button;
+        item.setAttribute('aria-pressed', String(on));
+        item.classList.toggle('bg-green', on);
+        item.classList.toggle('text-cream', on);
+      });
+      filter();
+    }));
+  </script>
+</BaseLayout>
