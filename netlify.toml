@@ -6,6 +6,18 @@
   NODE_VERSION = "22"
   SHOW_FIXTURES = "false"
 
+[[redirects]]
+  from = "http://www.thetipsygoose.com/*"
+  to = "https://thetipsygoose.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.thetipsygoose.com/*"
+  to = "https://thetipsygoose.com/:splat"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]
