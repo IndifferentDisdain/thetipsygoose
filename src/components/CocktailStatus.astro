@@ -1,0 +1,8 @@
+---
+interface Props {
+  status: 'tested' | 'provisional' | 'proposed';
+}
+const { status } = Astro.props;
+const labels = { tested: 'Tested recipe', provisional: 'Specification pending', proposed: 'Proposed experiment' };
+---
+<span class={`status status--${status}`}>{labels[status]}</span>

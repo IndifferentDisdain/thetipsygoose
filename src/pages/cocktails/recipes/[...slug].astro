@@ -1,0 +1,73 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CocktailStatus from '../../../components/CocktailStatus.astro';
+import Ornament from '../../../components/Ornament.astro';
+import { cocktailSlugFor, getCocktails, getRecipes, slugFor, type CocktailEntry } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  return (await getCocktails()).map(cocktail => ({ params: { slug: cocktailSlugFor(cocktail) }, props: { cocktail } }));
+}
+
+interface Props { cocktail: CocktailEntry }
+const { cocktail } = Astro.props;
+const { Content } = await render(cocktail);
+const d = cocktail.data;
+const tested = d.testingStatus === 'tested';
+const existingRecipes = new Map((await getRecipes()).map(recipe => [slugFor(recipe), recipe]));
+const pairings = d.pairedRecipes.map(slug => existingRecipes.get(slug)).filter(recipe => recipe !== undefined);
+const recipeIngredients = d.ingredients.map(({ quantity, unit, ingredient, notes }) => [quantity, unit, ingredient, notes].filter(value => value !== undefined).join(' '));
+const jsonLd = tested ? {
+  '@context': 'https://schema.org', '@type': 'Recipe', name: d.title, description: d.description,
+  recipeCategory: 'Cocktail', recipeYield: `${d.servings} cocktail`,
+  recipeIngredient: recipeIngredients, keywords: [...d.styles, ...d.flavorProfiles].join(', '),
+  ...(d.dateCreated ? { datePublished: d.dateCreated.toISOString() } : {}),
+  ...(d.heroImage ? { image: new URL(d.heroImage.src, Astro.site).href } : {}),
+} : undefined;
+const formatQuantity = (n: number) => {
+  const rounded = Math.round(n * 100) / 100;
+  const whole = Math.floor(rounded);
+  const fraction = Math.round((rounded - whole) * 100) / 100;
+  const glyphs: Record<string, string> = { '0.25': '¼', '0.5': '½', '0.75': '¾' };
+  return glyphs[String(fraction)] ? `${whole || ''}${glyphs[String(fraction)]}` : String(rounded);
+};
+const statusLabels = { house: 'House staple', rotating: 'On rotation', experimental: 'Experimental', archived: 'Archived' };
+---
+<BaseLayout title={d.title} description={d.description} type="article" image={d.heroImage?.src} jsonLd={jsonLd}>
+  <article>
+    <header class="recipe-intro page-masthead"><div class="shell relative z-10 grid gap-10 py-14 lg:grid-cols-[1fr_.55fr] lg:items-center lg:py-20">
+      <div><div class="flex flex-wrap items-center gap-3"><p class="eyebrow text-brass-bright">{statusLabels[d.menuStatus]} · {d.baseSpirit}</p><CocktailStatus status={d.testingStatus}/></div><h1 class="mt-7 font-display text-[clamp(3.2rem,7vw,6rem)] leading-[.88] tracking-[-.04em]">{d.title}</h1><p class="mt-7 max-w-2xl text-lg leading-8 text-cream/75">{d.description}</p><div class="mt-8 flex flex-wrap gap-3"><a href="#recipe" class="button border-cream text-cream">Jump to recipe</a>{tested && <button type="button" class="button border-cream/30 text-cream" onclick="window.print()">Print</button>}</div></div>
+      {d.heroImage ? <Image src={d.heroImage} alt={d.heroAlt ?? ''} width={720} height={640} class="aspect-square w-full border border-brass object-cover" /> : <div class="cocktail-hero-art"><Ornament class="text-brass-bright" /><p class="mt-8 font-display text-3xl italic text-cream/80">A Tipsy Goose pour</p></div>}
+    </div></header>
+
+    <div id="recipe" class="shell scroll-mt-6 py-12 lg:py-16">
+      {!tested && <aside class="mb-8 border border-rust bg-[#f2dfc8] p-5" aria-label="Recipe status"><CocktailStatus status={d.testingStatus}/><p class="mt-3 max-w-3xl text-sm leading-6">{d.testingStatus === 'provisional' ? 'This drink has been prepared, but the exact house specification still needs confirmation. Known ingredients are recorded without invented proportions.' : 'This is a pairing idea, not an established house recipe. It is preserved here for future testing and development.'}</p></aside>}
+      <div class="recipe-sheet menu-sheet grid gap-10 p-5 sm:p-8 lg:grid-cols-[.78fr_1.22fr]">
+        <section>
+          <div class="flex flex-wrap items-end justify-between gap-4 border-b border-green/20 pb-5"><div><p class="eyebrow">What goes in</p><h2 class="mt-3 text-4xl">Ingredients</h2></div>{tested && <label class="no-print text-xs font-bold tracking-wider uppercase">Make <select id="cocktail-servings" class="ml-2 min-h-11 border border-green/30 bg-cream px-3"><option value="1">1 cocktail</option><option value="2">2 cocktails</option><option value="4">4 cocktails</option></select></label>}</div>
+          {d.ingredients.length > 0 ? <ul class="mt-7 list-none space-y-4 p-0">{d.ingredients.map(item => <li class="flex gap-3 border-b border-green/10 pb-3 leading-6"><span aria-hidden="true" class="text-brass">◆</span><span>{item.quantity !== undefined && <strong class="cocktail-quantity" data-base={item.quantity}>{formatQuantity(item.quantity)}</strong>} {item.unit} {item.ingredient}{item.notes && <span class="text-ink/55">, {item.notes}</span>}</span></li>)}</ul> : <p class="mt-6 text-ink/65">Ingredients will be recorded after the first successful test.</p>}
+          <dl class="mt-8 grid gap-5 border-t border-green/20 pt-6 sm:grid-cols-2 lg:grid-cols-1">
+            {d.glassware && <div><dt class="eyebrow">Glassware</dt><dd class="mt-2">{d.glassware}</dd></div>}
+            {d.garnish.length > 0 && <div><dt class="eyebrow">Garnish</dt><dd class="mt-2">{d.garnish.join(' · ')}</dd></div>}
+          </dl>
+        </section>
+        <section class="cocktail-prose prose max-w-none border-green/20 lg:border-l lg:pl-10"><Content /></section>
+      </div>
+      {pairings.length > 0 && <section class="mt-10 border-t border-brass/50 pt-8"><p class="eyebrow">Bring it to the table</p><h2 class="mt-3 text-4xl">Food pairings</h2><ul class="mt-5 flex flex-wrap gap-3">{pairings.map(recipe => <li><a class="button" href={`/recipes/${slugFor(recipe)}/`}>{recipe.data.title}</a></li>)}</ul></section>}
+      <nav class="no-print mt-12 flex flex-wrap gap-3 border-t border-green/15 pt-8" aria-label="Cocktail navigation"><a href="/cocktails/" class="button">Cocktail menu</a><a href="/cocktails/recipes/" class="button">All cocktail recipes</a></nav>
+    </div>
+  </article>
+  {tested && <script>
+    const select = document.querySelector<HTMLSelectElement>('#cocktail-servings');
+    const quantities = [...document.querySelectorAll<HTMLElement>('.cocktail-quantity')];
+    const format = (n: number) => {
+      const rounded = Math.round(n * 100) / 100;
+      const whole = Math.floor(rounded);
+      const fraction = Math.round((rounded - whole) * 100) / 100;
+      const glyphs: Record<string, string> = { '0.25': '¼', '0.5': '½', '0.75': '¾' };
+      return glyphs[String(fraction)] ? `${whole || ''}${glyphs[String(fraction)]}` : String(rounded);
+    };
+    select?.addEventListener('change', () => quantities.forEach(element => element.textContent = format(Number(element.dataset.base) * Number(select.value))));
+  </script>}
+</BaseLayout>

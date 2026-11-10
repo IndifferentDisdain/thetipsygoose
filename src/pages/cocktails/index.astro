@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CocktailCard from '../../components/CocktailCard.astro';
+import Ornament from '../../components/Ornament.astro';
+import { getCocktails } from '../../lib/content';
+
+const cocktails = await getCocktails();
+const house = cocktails.filter(({ data }) => data.menuStatus === 'house');
+const rotating = cocktails.filter(({ data }) => data.menuStatus === 'rotating');
+---
+<BaseLayout title="Cocktail Menu" description="The Tipsy Goose house cocktails and current seasonal pours, with tested recipes for every drink on the menu.">
+  <header class="cocktail-masthead page-masthead">
+    <div class="shell relative z-10 py-16 text-center lg:py-24">
+      <p class="eyebrow text-brass-bright">The Tipsy Goose presents</p>
+      <h1 class="mx-auto mt-5 max-w-4xl font-display text-[clamp(4rem,9vw,7.5rem)] leading-[.82] tracking-[-.045em]">Cocktails<br/><em class="text-brass-bright">for the table</em></h1>
+      <p class="mx-auto mt-8 max-w-xl text-lg leading-8 text-cream/72">Permanent house favorites and whatever has earned a place in the current rotation. Season is a suggestion; good weather has its own rules in Florida.</p>
+      <a href="/cocktails/recipes/" class="button mt-9 border-cream text-cream">Open the full recipe book</a>
+    </div>
+  </header>
+
+  <div class="shell py-14 lg:py-20">
+    <section aria-labelledby="house-staples">
+      <Ornament class="mx-auto text-brass" />
+      <div class="mx-auto mt-7 max-w-2xl text-center"><p class="eyebrow">Always pouring</p><h2 id="house-staples" class="section-title mt-4">House Staples</h2><p class="mt-4 text-ink/65">The drinks that define our home bar.</p></div>
+      <div class="mx-auto mt-10 grid max-w-5xl gap-6 md:grid-cols-2">{house.map(cocktail => <CocktailCard cocktail={cocktail} menu />)}</div>
+    </section>
+
+    {rotating.length > 0 && <section class="mt-20 border-t border-brass/50 pt-16" aria-labelledby="on-rotation">
+      <div class="mx-auto max-w-2xl text-center"><p class="eyebrow">Right now</p><h2 id="on-rotation" class="section-title mt-4">On Rotation</h2><p class="mt-4 text-ink/65">Seasonal signatures and recent favorites, selected editorially rather than by the calendar.</p></div>
+      <div class:list={["mx-auto mt-10 grid max-w-5xl gap-6", rotating.length > 1 && "md:grid-cols-2"]}>{rotating.map(cocktail => <CocktailCard cocktail={cocktail} menu />)}</div>
+    </section>}
+  </div>
+</BaseLayout>

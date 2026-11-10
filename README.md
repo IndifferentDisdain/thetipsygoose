@@ -42,6 +42,7 @@ Publishable Markdown belongs in:
 - `src/content/recipes/`
 - `src/content/menus/`
 - `src/content/notes/`
+- `src/content/cocktails/`
 
 Development-only examples live under `src/fixtures/`. Their schemas are identical to the corresponding production collections, so they are useful as field references without becoming publishable content.
 
@@ -64,6 +65,17 @@ Only apply `kitchen-tested` when that is true. Use `statusNote` on recipes to cl
 - Store prep, cook, and total times as minutes. Omit any time that is not known.
 - Recipe JSON-LD is generated from these same fields. Do not maintain a second SEO-only recipe representation.
 - Related content currently uses slugs. Keep slugs stable after publication.
+
+### Cocktail publishing
+
+Each cocktail lives in one Markdown file under `src/content/cocktails/`. Frontmatter holds only structured facts used for menus, archive organization, serving adjustment, and relationships; preparation, tasting notes, variations, and history belong in the Markdown body.
+
+- `menuStatus: house` places a drink under House Staples.
+- `menuStatus: rotating` places it under On Rotation.
+- `menuStatus: experimental` or `archived` keeps it in the recipe book but off the curated menu.
+- `testingStatus: tested` enables the 1, 2, and 4 cocktail serving controls. Use `provisional` for a drink with an unconfirmed specification and `proposed` for an untested idea.
+
+Add an optional local `heroImage` and factual `heroAlt` when original drink photography is available. No component or menu edit is needed when adding or promoting a cocktail.
 
 ## Photographs and images
 

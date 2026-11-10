@@ -39,6 +39,7 @@ const recipeSchema = ({ image }: SchemaContext) => z.object({
   techniqueNotes: z.array(z.string()).default([]),
   pairings: z.array(z.string()).default([]),
   related: z.array(z.string()).default([]),
+  relatedCocktails: z.array(z.string()).default([]),
   aiContribution: z.object({
     used: z.boolean(),
     note: z.string().optional(),
@@ -46,6 +47,45 @@ const recipeSchema = ({ image }: SchemaContext) => z.object({
   }).optional(),
   heroImage: image().optional(),
   heroAlt: z.string().optional(),
+});
+
+const cocktailIngredient = z.object({
+  quantity: z.number().positive().optional(),
+  unit: z.string().optional(),
+  ingredient: z.string(),
+  notes: z.string().optional(),
+});
+
+const cocktailSchema = ({ image }: SchemaContext) => z.object({
+  title: z.string(),
+  description: z.string(),
+  menuStatus: z.enum(['house', 'rotating', 'experimental', 'archived']),
+  testingStatus: z.enum(['tested', 'provisional', 'proposed']),
+  season: z.array(z.enum(['spring', 'summer', 'autumn', 'winter'])).default([]),
+  baseSpirit: z.string(),
+  styles: z.array(z.string()).min(1),
+  flavorProfiles: z.array(z.string()).min(1),
+  servings: z.number().int().positive().default(1),
+  glassware: z.string().optional(),
+  ingredients: z.array(cocktailIngredient).default([]),
+  garnish: z.array(z.string()).default([]),
+  pairedRecipes: z.array(z.string()).default([]),
+  dateCreated: z.coerce.date().optional(),
+  heroImage: image().optional(),
+  heroAlt: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.testingStatus === 'tested' && data.ingredients.length === 0) {
+    ctx.addIssue({ code: 'custom', path: ['ingredients'], message: 'Tested cocktails require a complete ingredient list.' });
+  }
+  if (data.testingStatus === 'tested' && !data.glassware) {
+    ctx.addIssue({ code: 'custom', path: ['glassware'], message: 'Tested cocktails require glassware.' });
+  }
+  if (['house', 'rotating'].includes(data.menuStatus) && data.testingStatus !== 'tested') {
+    ctx.addIssue({ code: 'custom', path: ['testingStatus'], message: 'Curated menu cocktails must be tested.' });
+  }
+  if (data.heroImage && !data.heroAlt) {
+    ctx.addIssue({ code: 'custom', path: ['heroAlt'], message: 'Cocktail images require factual alt text.' });
+  }
 });
 
 const menuSchema = z.object({
@@ -72,6 +112,7 @@ const noteSchema = z.object({
 });
 
 export const collections = {
+  cocktails: defineCollection({ loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/cocktails' }), schema: cocktailSchema }),
   recipes: defineCollection({ loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/recipes' }), schema: recipeSchema }),
   menus: defineCollection({ loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/menus' }), schema: menuSchema }),
   notes: defineCollection({ loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/notes' }), schema: noteSchema }),

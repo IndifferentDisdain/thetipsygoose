@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = new URL('../dist/', import.meta.url);
 const rootPath = fileURLToPath(root);
-const required = ['index.html', 'about/index.html', 'recipes/index.html', 'menus/index.html', 'notes/index.html', '404.html', 'robots.txt', 'sitemap-index.xml'];
+const required = ['index.html', 'about/index.html', 'recipes/index.html', 'menus/index.html', 'notes/index.html', 'cocktails/index.html', 'cocktails/recipes/index.html', 'cocktails/recipes/house-martini/index.html', 'cocktails/recipes/tifftini/index.html', 'cocktails/recipes/mediterranean-ten/index.html', '404.html', 'robots.txt', 'sitemap-index.xml'];
 
 for (const file of required) await access(new URL(file, root));
 

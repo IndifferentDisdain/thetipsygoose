@@ -5,6 +5,11 @@ export const showFixtures = import.meta.env.SHOW_FIXTURES === 'true';
 export type RecipeEntry = CollectionEntry<'recipes'> | CollectionEntry<'fixtureRecipes'>;
 export type MenuEntry = CollectionEntry<'menus'> | CollectionEntry<'fixtureMenus'>;
 export type NoteEntry = CollectionEntry<'notes'> | CollectionEntry<'fixtureNotes'>;
+export type CocktailEntry = CollectionEntry<'cocktails'>;
+
+export async function getCocktails(): Promise<CocktailEntry[]> {
+  return (await getCollection('cocktails')).sort((a, b) => (b.data.dateCreated?.valueOf() ?? 0) - (a.data.dateCreated?.valueOf() ?? 0));
+}
 
 export async function getRecipes(): Promise<RecipeEntry[]> {
   const real = await getCollection('recipes', ({ data }) => showFixtures || data.editorialStatus !== 'draft');
@@ -29,6 +34,10 @@ export function isFixture(entry: RecipeEntry | MenuEntry | NoteEntry) {
 }
 
 export function slugFor(entry: RecipeEntry | MenuEntry | NoteEntry) {
+  return entry.id.replace(/\.(md|mdx)$/, '').replace(/\/index$/, '');
+}
+
+export function cocktailSlugFor(entry: CocktailEntry) {
   return entry.id.replace(/\.(md|mdx)$/, '').replace(/\/index$/, '');
 }
 

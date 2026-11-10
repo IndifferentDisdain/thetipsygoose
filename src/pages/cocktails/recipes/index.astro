@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CocktailCard from '../../../components/CocktailCard.astro';
+import Ornament from '../../../components/Ornament.astro';
+import { getCocktails } from '../../../lib/content';
+
+const cocktails = await getCocktails();
+---
+<BaseLayout title="Cocktail Recipe Book" description="Browse tested house cocktails, seasonal drinks, works in progress, and retired recipes from The Tipsy Goose.">
+  <header class="page-masthead"><div class="shell relative z-10 grid gap-8 py-14 lg:grid-cols-[1fr_.7fr] lg:items-end lg:py-20">
+    <div><p class="eyebrow text-brass-bright">The back bar</p><h1 class="section-title mt-5">Cocktail<br/>Recipe Book</h1></div>
+    <div><p class="text-lg leading-8 text-cream/72">Every tested favorite, unfinished specification, proposed experiment, and retired pour—clearly labeled so the record never outruns the glass.</p><a href="/cocktails/" class="mt-5 inline-block text-sm font-bold text-brass-bright underline decoration-brass underline-offset-4">View the curated menu</a></div>
+  </div></header>
+  <div class="shell py-12 lg:py-16">
+    <Ornament class="mx-auto mb-10 text-brass" />
+    <p class="mb-6 text-center text-xs font-bold tracking-wider uppercase">{cocktails.length} recipes and working records</p>
+    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{cocktails.map(cocktail => <CocktailCard cocktail={cocktail} />)}</div>
+  </div>
+</BaseLayout>

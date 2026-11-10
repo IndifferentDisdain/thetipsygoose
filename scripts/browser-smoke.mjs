@@ -124,6 +124,32 @@ try {
   assert(print.columns.split(' ').length >= 2, 'Print recipe did not retain ingredient/instruction columns.');
 
   await send('Emulation.setEmulatedMedia', { media: 'screen' });
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await navigate('/cocktails/');
+  await screenshot('cocktail-menu-mobile');
+  assert(await evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Cocktail menu overflows at 390px.');
+  const curated = await evaluate(`[...document.querySelectorAll('[data-cocktail-card]')].map(card => card.querySelector('h3').textContent.trim())`);
+  assert(curated.length === 3 && curated.includes('The House Martini') && curated.includes('The TiffTini') && curated.includes('The Mediterranean Ten'), `Curated menu entries are incorrect: ${JSON.stringify(curated)}`);
+
+  await send('Emulation.setDeviceMetricsOverride', { width: 834, height: 1194, deviceScaleFactor: 1, mobile: true });
+  await navigate('/cocktails/recipes/');
+  await screenshot('cocktail-archive-tablet');
+  assert(await evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Cocktail archive overflows at iPad width.');
+  const archiveCount = await evaluate(`document.querySelectorAll('[data-cocktail-card]').length`);
+  assert(archiveCount === 15, `Expected fifteen cocktail archive records, received ${archiveCount}.`);
+  assert(await evaluate(`document.querySelector('[data-cocktail-filter]') === null`), 'Unfinished cocktail filters are visible.');
+
+  await navigate('/cocktails/recipes/house-martini/');
+  await screenshot('cocktail-recipe-tablet');
+  assert(await evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Cocktail recipe overflows at iPad width.');
+  const cocktailScaled = await evaluate(`(() => {
+    const select = document.querySelector('#cocktail-servings'); select.value = '2'; select.dispatchEvent(new Event('change', { bubbles: true }));
+    return [...document.querySelectorAll('.cocktail-quantity')].map(item => item.textContent);
+  })()`);
+  assert(cocktailScaled[0] === '5' && cocktailScaled[1] === '1', `Cocktail scaling produced ${JSON.stringify(cocktailScaled)}.`);
+  await navigate('/cocktails/recipes/lemon-drop/');
+  assert(await evaluate(`document.querySelector('#cocktail-servings') === null`), 'Provisional cocktail unexpectedly exposes serving controls.');
+
   await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false });
   await navigate('/');
   await screenshot('home-desktop');
@@ -134,7 +160,7 @@ try {
   await navigate('/');
   await screenshot('home-mobile');
 
-  console.log('Browser smoke test passed: mobile overflow, search/type filters, iPad recipe layout, serving adjustment, checkboxes, and print media.');
+  console.log('Browser smoke test passed: mobile overflow/navigation, recipe filters, cocktail archive, iPad layouts, tested-recipe scaling, provisional-state controls, checkboxes, and print media.');
 } finally {
   socket?.close();
   chrome.kill('SIGTERM');

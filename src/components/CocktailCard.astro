@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import Ornament from './Ornament.astro';
+import CocktailStatus from './CocktailStatus.astro';
+import { cocktailSlugFor, type CocktailEntry } from '../lib/content';
+
+interface Props { cocktail: CocktailEntry; menu?: boolean }
+const { cocktail, menu = false } = Astro.props;
+const d = cocktail.data;
+const href = `/cocktails/recipes/${cocktailSlugFor(cocktail)}/`;
+---
+<article
+  class:list={["cocktail-card group", { "cocktail-card--menu": menu }]}
+  data-cocktail-card
+>
+  {d.heroImage ? (
+    <a href={href} class="block overflow-hidden" aria-label={`View ${d.title} recipe`}>
+      <Image src={d.heroImage} alt={d.heroAlt ?? ''} width={720} height={520} class="aspect-[7/5] w-full object-cover transition duration-300 group-hover:scale-[1.02]" />
+    </a>
+  ) : (
+    <a href={href} class="cocktail-card__art" aria-label={`View ${d.title} recipe`}><Ornament class="text-brass-bright" /></a>
+  )}
+  <div class="p-5 sm:p-6">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <p class="eyebrow">{d.baseSpirit}</p>
+      {!menu && <CocktailStatus status={d.testingStatus} />}
+    </div>
+    <h3 class="mt-5 text-[2.25rem] tracking-[-.025em]"><a href={href} class="no-underline">{d.title}</a></h3>
+    <p class="mt-3 text-sm leading-6 text-ink/68">{d.description}</p>
+    <p class="mt-6 border-t border-green/15 pt-4 text-xs font-bold tracking-[.08em] text-ink/58 uppercase">{d.flavorProfiles.join(' · ')}</p>
+  </div>
+</article>

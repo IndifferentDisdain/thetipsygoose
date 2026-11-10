@@ -3,7 +3,7 @@ import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import Ornament from '../../components/Ornament.astro';
-import { getRecipes, isFixture, minutesToIso, slugFor, type RecipeEntry } from '../../lib/content';
+import { cocktailSlugFor, getCocktails, getRecipes, isFixture, minutesToIso, slugFor, type RecipeEntry } from '../../lib/content';
 
 export async function getStaticPaths() {
   const recipes = await getRecipes();
@@ -15,6 +15,8 @@ const { recipe } = Astro.props;
 const { Content } = await render(recipe);
 const d = recipe.data;
 const fixture = isFixture(recipe);
+const cocktails = await getCocktails();
+const relatedCocktails = d.relatedCocktails.map(slug => cocktails.find(cocktail => cocktailSlugFor(cocktail) === slug)).filter(cocktail => cocktail !== undefined);
 const url = new URL(`/recipes/${slugFor(recipe)}/`, Astro.site).href;
 const ingredients = d.ingredientGroups.flatMap(group => group.ingredients.map(item => [item.quantity, item.unit, item.item, item.note].filter(Boolean).join(' ')));
 const jsonLd: Record<string, unknown> = {
@@ -90,6 +92,7 @@ const formatQuantity = (n: number) => {
         {d.substitutions.length > 0 && <section class="card p-5"><h2 class="font-sans text-xs font-extrabold tracking-wider uppercase">Substitutions</h2><ul class="mt-3 list-disc space-y-2 pl-5 text-sm">{d.substitutions.map(item => <li>{item}</li>)}</ul></section>}
         {d.makeAhead.length > 0 && <section class="card p-5"><h2 class="font-sans text-xs font-extrabold tracking-wider uppercase">Make ahead</h2><ul class="mt-3 list-disc space-y-2 pl-5 text-sm">{d.makeAhead.map(item => <li>{item}</li>)}</ul></section>}
         {d.techniqueNotes.length > 0 && <section class="card p-5"><h2 class="font-sans text-xs font-extrabold tracking-wider uppercase">Technique notes</h2><ul class="mt-3 list-disc space-y-2 pl-5 text-sm">{d.techniqueNotes.map(item => <li>{item}</li>)}</ul></section>}
+        {relatedCocktails.length > 0 && <section class="card p-5"><h2 class="font-sans text-xs font-extrabold tracking-wider uppercase">Cocktails for the table</h2><ul class="mt-3 space-y-2 text-sm">{relatedCocktails.map(cocktail => <li><a class="text-rust underline decoration-brass underline-offset-4" href={`/cocktails/recipes/${cocktailSlugFor(cocktail)}/`}>{cocktail.data.title}</a></li>)}</ul></section>}
         {d.aiContribution?.used && <section class="border border-brass/40 bg-[#efe1c8] p-5"><p class="eyebrow">AI contribution</p>{d.aiContribution.note && <p class="mt-3 text-sm leading-6">{d.aiContribution.note}</p>}{d.aiContribution.changedAfterCooking && <p class="mt-3 text-sm leading-6"><strong>Changed after cooking:</strong> {d.aiContribution.changedAfterCooking}</p>}</section>}
       </aside>
     </div>
