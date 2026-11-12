@@ -1,24 +1,36 @@
 ---
 title: The Goose's Garden Cooler
-description: A cucumber-and-jalapeño tequila cooler with a prepared lemonade variation and an unfinished final specification.
-menuStatus: experimental
-testingStatus: provisional
+description: A crisp cucumber-and-jalapeño tequila cooler finished with sparkling water.
+menuStatus: house
+testingStatus: tested
 baseSpirit: Tequila
 styles: [Cooler]
 flavorProfiles: [cucumber, lime, spicy, refreshing]
+servings: 1
+glassware: Rocks glass
 ingredients:
-  - { ingredient: Tequila }
-  - { ingredient: Lime }
-  - { ingredient: Agave }
-  - { ingredient: Cucumber }
-  - { ingredient: Jalapeño }
+  - { quantity: 2, unit: oz, ingredient: Blanco tequila }
+  - { quantity: 0.75, unit: oz, ingredient: Fresh lime juice }
+  - { quantity: 0.5, unit: oz, ingredient: Agave syrup }
+  - { quantity: 3, unit: slices, ingredient: Cucumber }
+  - { quantity: 1, unit: slice, ingredient: Fresh jalapeño, notes: Thin slice; adjust for heat }
+  - { quantity: 2, unit: oz, ingredient: Chilled sparkling water }
+  - { ingredient: Ice }
+garnish: [Cucumber slice, optional]
 ---
 
-## Recipe Status
+## Preparation
 
-The working idea combines tequila, lime, agave, cucumber, and jalapeño. A lemonade variation was actually prepared, but the final specification and proportions remain open.
+1. Gently muddle the cucumber and jalapeño in a shaker.
+2. Add tequila, fresh lime juice, and agave syrup.
+3. Add ice and shake vigorously for 10–12 seconds.
+4. Double-strain into an ice-filled rocks glass.
+5. Top with 2 oz chilled sparkling water and stir gently once. Garnish with cucumber if desired.
 
-## Experiment History
+## Tasting Notes
 
-Preserve the lemonade variation as a real test, not yet as the canonical recipe. The next round should record quantities and settle whether lemonade belongs in the house version.
+Cool cucumber and lime balance the jalapeño heat; sparkling water keeps the finish dry, lively, and refreshing. Adjust the jalapeño to taste.
 
+## Recipe History
+
+First prepared with lemonade in place of sparkling water. Both versions were tried, and the sparkling-water version was explicitly preferred on November 11, 2026. Sparkling water is the house specification; lemonade remains a past experiment, not the standard recipe.
