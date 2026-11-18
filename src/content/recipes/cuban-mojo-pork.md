@@ -13,7 +13,7 @@ equipment: [Slow cooker, Cast-iron skillet, Saucepan, Fine-mesh strainer]
 ingredientGroups:
   - name: Mojo pork
     ingredients:
-      - { quantity: 3, unit: lb, item: boneless pork shoulder, note: "2.5–3 lb; expect leftovers with sides for two" }
+      - { quantity: 3, unit: lb, item: boneless pork shoulder, note: "2.5–3 lb; expect leftovers" }
       - { quantity: 1, unit: whole, item: orange, note: "juiced; plus a splash of fresh orange juice to finish" }
       - { quantity: 3, unit: whole, item: limes, note: juiced }
       - { quantity: 8, unit: cloves, item: garlic, note: crushed or minced }
@@ -23,26 +23,26 @@ ingredientGroups:
       - { quantity: 2, unit: tsp, item: Diamond Crystal kosher salt, note: "use less if using denser salt; adjust after cooking" }
       - { quantity: 0.5, unit: tsp, item: black pepper }
       - { quantity: 2, unit: whole, item: bay leaves }
-  - name: Cuban black beans (double the two-serving preparation)
+  - name: Cuban black beans
     ingredients:
-      - { quantity: 30, unit: oz, item: canned black beans, note: undrained }
-      - { quantity: 1, unit: whole, item: yellow onion, note: finely diced }
-      - { quantity: 1, unit: whole, item: green bell pepper, note: finely diced }
-      - { quantity: 4, unit: cloves, item: garlic, note: minced }
-      - { quantity: 2, unit: tbsp, item: olive oil }
-      - { quantity: 1, unit: tsp, item: ground cumin }
-      - { quantity: 1, unit: tsp, item: dried oregano }
-      - { quantity: 2, unit: whole, item: bay leaves }
-      - { quantity: 0.5, unit: cup, item: chicken stock }
-      - { quantity: 2, unit: tsp, item: red wine vinegar }
-      - { item: salt and black pepper, note: to taste }
-  - name: Garlic white rice (double the two-serving preparation)
-    ingredients:
-      - { quantity: 1, unit: cup, item: long-grain white rice }
-      - { quantity: 1.5, unit: cups, item: water }
-      - { quantity: 1, unit: tbsp, item: olive oil }
-      - { quantity: 0.5, unit: tsp, item: kosher salt }
+      - { quantity: 15, unit: oz, item: canned black beans, note: undrained }
+      - { quantity: 0.5, unit: whole, item: yellow onion, note: finely diced }
+      - { quantity: 0.5, unit: whole, item: green bell pepper, note: finely diced }
       - { quantity: 2, unit: cloves, item: garlic, note: minced }
+      - { quantity: 1, unit: tbsp, item: olive oil }
+      - { quantity: 0.5, unit: tsp, item: ground cumin }
+      - { quantity: 0.5, unit: tsp, item: dried oregano }
+      - { quantity: 1, unit: whole, item: bay leaves }
+      - { quantity: 0.25, unit: cup, item: chicken stock }
+      - { quantity: 1, unit: tsp, item: red wine vinegar }
+      - { item: salt and black pepper, note: to taste }
+  - name: Garlic white rice
+    ingredients:
+      - { quantity: 0.5, unit: cup, item: long-grain white rice }
+      - { quantity: 0.75, unit: cups, item: water }
+      - { quantity: 0.5, unit: tbsp, item: olive oil }
+      - { quantity: 0.25, unit: tsp, item: kosher salt }
+      - { quantity: 1, unit: cloves, item: garlic, note: minced }
   - name: Quick-pickled red onions
     ingredients:
       - { quantity: 1, unit: whole, item: red onion, note: thinly sliced }
@@ -82,7 +82,7 @@ makeAhead:
   - "Start the pork in the morning and refrigerate the quick-pickled onions until dinner."
 techniqueNotes:
   - "The pork tasted bland after slow cooking. Salt, reduction of the original liquid and a splash of orange after searing corrected the flavor without a separate finishing sauce."
-  - "The original side recipes served two; their quantities are doubled here for a four-serving family meal. The shoulder may yield additional leftovers."
+  - "The family meal used one 15 oz can of black beans and 1/2 cup dry rice, without doubling the sides. The shoulder may yield additional leftovers."
 pairings:
   - "Cuban Sunset Margarita"
 relatedCocktails: [cuban-sunset-margarita]
