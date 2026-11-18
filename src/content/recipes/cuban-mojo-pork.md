@@ -38,11 +38,11 @@ ingredientGroups:
       - { item: salt and black pepper, note: to taste }
   - name: Garlic white rice
     ingredients:
-      - { quantity: 0.5, unit: cup, item: long-grain white rice }
-      - { quantity: 0.75, unit: cups, item: water }
-      - { quantity: 0.5, unit: tbsp, item: olive oil }
-      - { quantity: 0.25, unit: tsp, item: kosher salt }
-      - { quantity: 1, unit: cloves, item: garlic, note: minced }
+      - { quantity: 1, unit: cup, item: long-grain white rice }
+      - { quantity: 1.5, unit: cups, item: water }
+      - { quantity: 1, unit: tbsp, item: olive oil }
+      - { quantity: 0.5, unit: tsp, item: kosher salt }
+      - { quantity: 2, unit: cloves, item: garlic, note: minced }
   - name: Quick-pickled red onions
     ingredients:
       - { quantity: 1, unit: whole, item: red onion, note: thinly sliced }
@@ -82,7 +82,7 @@ makeAhead:
   - "Start the pork in the morning and refrigerate the quick-pickled onions until dinner."
 techniqueNotes:
   - "The pork tasted bland after slow cooking. Salt, reduction of the original liquid and a splash of orange after searing corrected the flavor without a separate finishing sauce."
-  - "The family meal used one 15 oz can of black beans and 1/2 cup dry rice, without doubling the sides. The shoulder may yield additional leftovers."
+  - "The family meal used one 15 oz can of black beans and 1 cup dry rice; only the original rice recipe was doubled. The shoulder may yield additional leftovers."
 pairings:
   - "Cuban Sunset Margarita"
 relatedCocktails: [cuban-sunset-margarita]
