@@ -70,7 +70,10 @@ techniqueNotes:
   - "The chicken is the centerpiece, not an ingredient in a pasta dish. Keep the buttered noodles separate from the sauce until plating."
   - "Brown mushrooms separately rather than simmering them in the sauce."
   - "The generous mustard cream sauce is the defining element. Preserve its pourable consistency and bright mustard and tarragon character."
+  - "Post-service note: a bitter green or simple acidic salad would provide a welcome contrast to the rich chicken, cream sauce, noodles and mushrooms. This is a suggested addition, not part of the original 9/10 tasting."
+  - "Best suited to weekend service because of its richness."
 pairings:
+  - "Optional frisée and radicchio salad, lightly dressed with extra-virgin olive oil, red wine vinegar and a pinch of salt; alternatively, arugula with lemon vinaigrette."
   - "White Burgundy or another dry Chardonnay"
   - "Parisian Orchard (experimental cocktail)"
 relatedCocktails: [parisian-orchard]
